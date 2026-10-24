@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#3b5a37"><style>html{-webkit-text-size-adjust:100%}body{margin:0}</style>
+<title>Commandes Pain Blé</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: application mobile. Barre du haut fixe, une vue à la fois, navigation en bas avec bouton central « Nouvelle ». */
+:root{
+  --bg:#f1f2ec;
+  --surface:#fbfbf8;
+  --ink:#1d2a22;
+  --muted:#65726a;
+  --line:#d9ddd2;
+  --accent:#3b5a37;
+  --accent-ink:#ffffff;
+  --wheat:#e9b949;
+  --wheat-soft:#f6e6b8;
+  --good:#2f7d4f;
+  --good-soft:#d9eddf;
+  --warn:#a4580f;
+  --warn-soft:#f8e3cc;
+  --info:#2d5f8a;
+  --info-soft:#dbe8f3;
+  --danger:#a8321f;
+  --danger-soft:#f6d9d3;
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121a15;--surface:#1b251e;--ink:#e8ede4;--muted:#9aa89e;--line:#2d3a31;
+    --accent:#8fbd86;--accent-ink:#12200f;--wheat:#e9b949;--wheat-soft:#3d3318;
+    --good:#7fd09c;--good-soft:#1f3a2a;--warn:#f0a95e;--warn-soft:#3e2c18;--info:#8dbbe6;--info-soft:#1e3347;--danger:#f08a78;--danger-soft:#4a2420;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121a15;--surface:#1b251e;--ink:#e8ede4;--muted:#9aa89e;--line:#2d3a31;
+  --accent:#8fbd86;--accent-ink:#12200f;--wheat:#e9b949;--wheat-soft:#3d3318;
+  --good:#7fd09c;--good-soft:#1f3a2a;--warn:#f0a95e;--warn-soft:#3e2c18;--info:#8dbbe6;--info-soft:#1e3347;--danger:#f08a78;--danger-soft:#4a2420;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.4;padding-inline:16px;padding-block:0 96px}
+h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance}
+h2{font-size:1.25rem;font-weight:800}
+h3{font-size:1.05rem;font-weight:800}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:3px solid var(--wheat);outline-offset:2px}
+.wrap{max-width:680px;margin-inline:auto;min-width:0}
+.view{display:flex;flex-direction:column;gap:14px;padding-block:16px}
+.lab{font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+
+/* barre du haut */
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--bg);margin-inline:-16px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.appbar .wrap{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{flex:none;width:38px;height:38px;border-radius:11px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
+.brand b{display:block;font-family:var(--font-display);font-weight:800;font-size:1.1rem;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brand small{color:var(--muted);font-size:.78rem}
+.today{font-size:.82rem;font-weight:600;color:var(--muted);text-align:right;text-transform:capitalize}
+
+/* navigation basse */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+.nav .wrap{display:grid;grid-template-columns:repeat(5,1fr);align-items:end;gap:2px}
+.nav button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;font-size:.7rem;font-weight:600;color:var(--muted);border-radius:10px}
+.nav button svg{width:24px;height:24px}
+.nav button[aria-current="page"]{color:var(--accent)}
+.nav button.add{color:var(--accent-ink)}
+.nav button.add span.ic{width:50px;height:50px;border-radius:50%;background:var(--accent);display:grid;place-items:center;margin-top:-22px;border:4px solid var(--surface)}
+.nav button.add{color:var(--ink)}
+
+.svg-i{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* sélecteur de jour */
+.datebar{display:flex;align-items:center;gap:8px}
+.datebar .day{flex:1;min-width:0;text-align:center;font-family:var(--font-display);font-weight:800;font-size:1.1rem;text-transform:capitalize;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px}
+.datebar .day small{display:block;font-family:var(--font-body);font-weight:600;font-size:.74rem;color:var(--muted);text-transform:none}
+.step{width:46px;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:1.3rem;font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 13px;font-weight:600;font-size:.86rem;color:var(--muted);white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chips input[type=date]{width:auto;min-height:36px;padding:4px 10px;border-radius:999px;font-size:.86rem}
+
+/* tableau du jour */
+.board{background:var(--accent);color:var(--accent-ink);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.board .lbl{font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.bake{display:flex;gap:10px}
+.bake>div{flex:1;background:rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;min-width:0}
+.bake b{display:block;font-family:var(--font-display);font-size:2.1rem;line-height:1;font-weight:800;font-variant-numeric:tabular-nums}
+.bake span{font-size:.84rem}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-variant-numeric:tabular-nums}
+.kpis div{min-width:0}
+.kpis small{display:block;font-size:.72rem;opacity:.85}
+.kpis b{font-size:.98rem;font-weight:700;overflow-wrap:anywhere}
+
+/* champs */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card.editing{border-color:var(--wheat);box-shadow:0 0 0 3px var(--wheat-soft)}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field>label{font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+input[type=text],input[type=tel],input[type=date],input[type=time],input[type=number],textarea,select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px;min-height:46px}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:46px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row>*{min-width:0}
+.qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg)}
+.qty button{width:54px;height:54px;border:0;background:var(--wheat-soft);font-size:1.5rem;font-weight:700;color:var(--ink)}
+.qty button:active{background:var(--wheat)}
+.qty output{flex:1;text-align:center;font-family:var(--font-display);font-weight:800;font-size:1.6rem;font-variant-numeric:tabular-nums}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{background:var(--bg);border:0;padding:11px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.hint{font-size:.84rem;color:var(--muted)}
+.total{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--line);padding-top:12px;font-variant-numeric:tabular-nums}
+.total b{font-family:var(--font-display);font-size:1.4rem;font-weight:800}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.primary{background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:13px 20px;font-weight:700;font-size:1rem;flex:1 1 180px}
+.primary:hover{filter:brightness(1.08)}
+.ghost{background:none;border:1px solid var(--line);border-radius:10px;padding:9px 13px;color:var(--ink);font-weight:600;font-size:.88rem}
+.ghost:hover{border-color:var(--accent)}
+.ghost.danger{color:var(--danger);border-color:var(--danger)}
+.err{color:var(--danger);font-size:.88rem;font-weight:600;min-height:1.2em}
+
+/* commandes */
+.list{display:flex;flex-direction:column;gap:10px;padding:0;margin:0;list-style:none}
+.group{margin-top:6px}
+.order{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.order.done{opacity:.75}
+.order .head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.order .who{min-width:0}
+.order .who b{font-family:var(--font-display);font-size:1.1rem;font-weight:800;overflow-wrap:anywhere}
+.order .who small{display:block;color:var(--muted);font-size:.84rem;overflow-wrap:anywhere}
+.amount{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap;text-align:right}
+.items{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tag{background:var(--wheat-soft);border-radius:8px;padding:4px 10px;font-weight:700;font-size:.92rem;font-variant-numeric:tabular-nums}
+.meta{font-size:.82rem;color:var(--muted);font-weight:600}
+.note{font-size:.88rem;color:var(--muted);font-style:italic;overflow-wrap:anywhere}
+.badge{display:inline-block;border-radius:999px;padding:3px 10px;font-size:.76rem;font-weight:700}
+.b-attente{background:var(--warn-soft);color:var(--warn)}
+.b-prete{background:var(--info-soft);color:var(--info)}
+.b-livree{background:var(--good-soft);color:var(--good)}
+.b-paye{background:var(--good-soft);color:var(--good)}
+.b-du{background:var(--warn-soft);color:var(--warn)}
+.gd{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0 16px}
+.gd summary{cursor:pointer;font-family:var(--font-display);font-weight:800;font-size:1.02rem;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:10px}
+.gd summary::-webkit-details-marker{display:none}
+.gd summary::after{content:'+';color:var(--accent);font-size:1.3rem;line-height:1}
+.gd[open] summary::after{content:'−'}
+.gd[open] summary{border-bottom:1px solid var(--line);margin-bottom:12px}
+.gd .gb{padding-bottom:16px;display:flex;flex-direction:column;gap:10px;font-size:.96rem}
+.gd .gb p{margin:0}
+.gd ol,.gd ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.gd .tip{background:var(--wheat-soft);border-radius:10px;padding:10px 12px;font-size:.9rem}
+.gd .warn{background:var(--danger-soft);color:var(--danger);border-radius:10px;padding:10px 12px;font-size:.9rem;font-weight:600}
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.cal .ch{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cal .ch b{font-family:var(--font-display);font-weight:800;text-transform:capitalize;text-align:center;flex:1}
+.cal .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .dow{font-size:.7rem;font-weight:700;color:var(--muted);text-align:center}
+.cal .d{aspect-ratio:1/1.1;border:1px solid transparent;border-radius:10px;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:600;min-width:0;padding:2px;font-variant-numeric:tabular-nums}
+.cal .d.has{background:var(--wheat-soft)}
+.cal .d.today{border-color:var(--accent);border-width:2px}
+.cal .d.unpaid{background:var(--danger-soft);color:var(--danger)}
+.cal .d.pending{background:var(--warn-soft);color:var(--warn)}
+.cal .d.settled{background:var(--good-soft);color:var(--good)}
+.cal .d.sel{outline:3px solid var(--ink);outline-offset:1px}
+.cal .bd{display:flex;gap:2px;justify-content:center;flex-wrap:nowrap}
+.cal .bd .n{padding:0 5px}
+.cal .n{font-size:.68rem;font-weight:700;border-radius:999px;padding:0 6px;background:var(--ink);color:var(--bg);line-height:1.5}
+.cal .n.r{background:var(--danger);color:var(--surface)}
+.cal .n.o{background:var(--warn);color:var(--surface)}
+.cal .n.v{background:var(--good);color:var(--surface)}
+.cal .legend{flex-wrap:wrap}
+.cal .legend i{border:1px solid var(--line)}
+.cal .today-btn{align-self:flex-start}
+.stack{display:flex;flex-direction:column;gap:14px}
+.alertbar{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--danger-soft);color:var(--danger);border:1px solid var(--danger);border-radius:14px;padding:12px 14px}
+.alertbar{flex-wrap:wrap}
+.alertbar div{display:flex;flex-direction:column;min-width:0;flex:1 1 220px}
+.alertbar b{font-weight:800}
+.alertbar span{font-size:.9rem}
+.alertbar .ghost{color:var(--danger);border-color:var(--danger);flex:none}
+.board.warnb{background:var(--danger);color:var(--surface)}
+.b-alert{background:var(--danger-soft);color:var(--danger)}
+.order.alert{border-color:var(--danger)}
+.owe{background:var(--danger-soft);color:var(--danger);border-radius:10px;padding:8px 12px;font-weight:600;font-size:.92rem}
+.pay.due{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+.ask{display:flex;flex-wrap:wrap;align-items:center;gap:8px;width:100%;background:var(--bg);border:1px dashed var(--ink);border-radius:10px;padding:10px}
+.ask>span{font-weight:700;flex:1 1 100%}
+.ostat .adv.no{background:var(--danger-soft);color:var(--danger);border:1px solid var(--danger)}
+.ostat .adv.cancel{background:none;border:0;color:var(--muted);text-decoration:underline}
+.ostat{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ostat .adv{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:8px 14px;font-weight:700;font-size:.88rem}
+.ostat .adv.rev{background:none;border:1px solid var(--line);color:var(--muted)}
+.pay{border:1px solid var(--line);background:transparent;border-radius:10px;padding:8px 14px;font-weight:700;font-size:.88rem}
+.pay.on{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.pay.off{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.tools{display:flex;gap:4px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:8px;margin-top:2px}
+.tools button{background:none;border:0;padding:6px 8px;color:var(--muted);font-weight:600;font-size:.84rem;text-decoration:underline;text-underline-offset:3px}
+.tools button.sure{color:var(--danger);font-weight:700}
+.tools .sp{margin-inline-start:auto}
+.empty{text-align:center;padding:28px 16px;border:2px dashed var(--line);border-radius:16px;color:var(--muted);display:flex;flex-direction:column;gap:10px;align-items:center}
+.empty b{font-family:var(--font-display);font-size:1.12rem;color:var(--ink)}
+
+/* clients */
+.cl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.cl .head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.cl .head b{font-family:var(--font-display);font-size:1.1rem;font-weight:800;overflow-wrap:anywhere}
+.cl small{color:var(--muted);font-size:.84rem;display:block}
+.hist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:.88rem;font-variant-numeric:tabular-nums}
+.hist li{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:6px}
+
+/* bilan */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;min-width:0}
+.tile small{display:block;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tile b{display:block;font-family:var(--font-display);font-size:1.35rem;font-weight:800;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.tile.due b{color:var(--warn)}
+.chartbox{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.chartbox svg{width:100%;height:auto;display:block}
+.chartbox text{fill:var(--muted);font-family:var(--font-body);font-size:10px}
+.legend{display:flex;gap:14px;font-size:.82rem;color:var(--muted);font-weight:600}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:6px}
+.top{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.top li{display:flex;flex-direction:column;gap:4px}
+.top .r{display:flex;justify-content:space-between;gap:10px;font-size:.92rem;font-variant-numeric:tabular-nums}
+.top .r span:first-child{font-weight:600;overflow-wrap:anywhere;min-width:0}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:4px}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;font-size:.9rem;max-width:calc(100% - 32px);z-index:8;text-align:center}
+@media (prefers-reduced-motion:no-preference){.order,.cl{animation:in .18s ease-out}@keyframes in{from{opacity:0;transform:translateY(4px)}}}
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" class="svg-i"><path d="M12 21V8"/><path d="M12 8c-2.5 0-4-1.6-4-4 2.5 0 4 1.6 4 4z"/><path d="M12 8c2.5 0 4-1.6 4-4-2.5 0-4 1.6-4 4z"/><path d="M12 14c-2.5 0-4-1.6-4-4 2.5 0 4 1.6 4 4z"/><path d="M12 14c2.5 0 4-1.6 4-4-2.5 0-4 1.6-4 4z"/></svg></div>
+      <div><b id="shopName">Pain Blé</b><small>Gestion des commandes</small></div>
+    </div>
+    <div class="today" id="todayLbl"></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div id="storeWarn" class="alertbar" style="margin-top:12px" hidden><div><b>Attention : les données ne sont pas gardées</b><span>Dans ce mode, ce téléphone n'enregistre pas vos commandes : elles seront perdues si vous quittez. Ouvrez le fichier directement avec Chrome (pas depuis WhatsApp), ou utilisez la page en ligne.</span></div><button class="ghost" id="warnBackup" type="button">Copier la sauvegarde</button></div>
+
+<!-- COMMANDES -->
+<main class="view" id="v-orders">
+  <div id="alertbar" class="alertbar" hidden></div>
+  <div class="stack" id="dayTools">
+  <div class="datebar">
+    <button class="step" id="prev" type="button" aria-label="Jour précédent">‹</button>
+    <div class="day" id="dayLabel"></div>
+    <button class="step" id="next" type="button" aria-label="Jour suivant">›</button>
+  </div>
+  <div class="chips">
+    <button class="chip" id="chipToday" type="button" aria-pressed="false">Aujourd'hui</button>
+    <button class="chip" id="chipTomorrow" type="button" aria-pressed="false">Demain</button>
+    <button class="chip" id="chipCal" type="button" aria-pressed="false">Calendrier</button>
+    <input id="pickDate" type="date" aria-label="Choisir un jour">
+  </div>
+  <div id="calendar" class="cal" hidden></div>
+  <section class="board" id="board" aria-live="polite"></section>
+  <div class="field">
+    <label for="search">Chercher un client (tous les jours)</label>
+    <input id="search" type="text" placeholder="Taper un nom">
+  </div>
+  <div class="chips" id="filters"></div>
+  </div>
+  <div id="debtHead" class="stack" hidden></div>
+  <ul class="list" id="list"></ul>
+</main>
+
+<!-- NOUVELLE COMMANDE -->
+<section class="view" id="v-new" hidden>
+  <form class="card" id="form" novalidate>
+    <h2 id="formTitle">Nouvelle commande</h2>
+    <div class="field">
+      <label for="name">Nom du client</label>
+      <input id="name" type="text" list="clients" autocomplete="off" autocapitalize="words" placeholder="Ex. Awa Diop">
+      <datalist id="clients"></datalist>
+      <span class="hint" id="nameInfo"></span>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label id="lp">Petit modèle</label>
+        <div class="qty" role="group" aria-labelledby="lp">
+          <button type="button" data-q="petit" data-d="-1" aria-label="Un petit de moins">−</button>
+          <output id="qPetit">0</output>
+          <button type="button" data-q="petit" data-d="1" aria-label="Un petit de plus">+</button>
+        </div>
+        <span class="hint" id="hPetit"></span>
+      </div>
+      <div class="field">
+        <label id="lg">Grand modèle</label>
+        <div class="qty" role="group" aria-labelledby="lg">
+          <button type="button" data-q="grand" data-d="-1" aria-label="Un grand de moins">−</button>
+          <output id="qGrand">0</output>
+          <button type="button" data-q="grand" data-d="1" aria-label="Un grand de plus">+</button>
+        </div>
+        <span class="hint" id="hGrand"></span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="date">Pour le jour</label><input id="date" type="date"><span class="hint" id="dateInfo"></span></div>
+      <div class="field"><label for="time">Heure (facultatif)</label><input id="time" type="time"></div>
+    </div>
+    <div class="field">
+      <label id="lm">Retrait ou livraison</label>
+      <div class="seg" role="group" aria-labelledby="lm">
+        <button type="button" data-mode="retrait" aria-pressed="true">Retrait</button>
+        <button type="button" data-mode="livraison" aria-pressed="false">Livraison</button>
+      </div>
+    </div>
+    <div class="field"><label for="phone">Téléphone (facultatif)</label><input id="phone" type="tel" inputmode="tel" placeholder="77 000 00 00"></div>
+    <div class="field"><label for="note">Remarque ou adresse (facultatif)</label><textarea id="note" rows="2" placeholder="Ex. livraison à Mbour, bien cuit"></textarea></div>
+    <label class="field" style="flex-direction:row;align-items:center;gap:10px;text-transform:none;letter-spacing:0;font-size:1rem;font-weight:600;color:var(--ink)">
+      <input id="paidNow" type="checkbox" style="width:22px;height:22px"> Déjà payé
+    </label>
+    <div class="total"><span class="lab">Montant</span><b id="formTotal">0 FCFA</b></div>
+    <div class="err" id="err" role="alert"></div>
+    <div class="actions">
+      <button class="primary" id="save" type="button">Enregistrer la commande</button>
+      <button class="ghost" id="cancel" type="button">Annuler</button>
+    </div>
+  </form>
+</section>
+
+<!-- CLIENTS -->
+<section class="view" id="v-clients" hidden>
+  <h2>Clients</h2>
+  <div class="field"><label for="csearch">Chercher un client</label><input id="csearch" type="text" placeholder="Taper un nom"></div>
+  <div class="list" id="clist"></div>
+</section>
+
+<!-- BILAN -->
+<section class="view" id="v-stats" hidden>
+  <h2>Bilan des ventes</h2>
+  <div class="chips" id="periods"></div>
+  <div class="tiles" id="tiles"></div>
+  <div class="chartbox" id="chartbox"></div>
+  <div class="card" id="topbox"></div>
+  <div class="actions"><button class="ghost" id="csv" type="button">Copier les commandes (tableur CSV)</button></div>
+</section>
+
+<!-- RÉGLAGES -->
+<section class="view" id="v-settings" hidden>
+  <h2>Réglages</h2>
+  <div class="card"><h3>Besoin d'aide ?</h3><div class="actions"><button class="primary" id="openGuide" type="button">Ouvrir le guide d'utilisation</button></div></div>
+  <div class="card">
+    <div class="field"><label for="sShop">Nom affiché en haut</label><input id="sShop" type="text" maxlength="40"></div>
+    <div class="row">
+      <div class="field"><label for="pPetit">Prix petit (FCFA)</label><input id="pPetit" type="number" inputmode="numeric" min="0"></div>
+      <div class="field"><label for="pGrand">Prix grand (FCFA)</label><input id="pGrand" type="number" inputmode="numeric" min="0"></div>
+    </div>
+    <div class="hint">Un nouveau prix s'applique aux nouvelles commandes. Les anciennes gardent le prix du jour où elles ont été prises.</div>
+  </div>
+  <div class="card">
+    <h3>Apparence</h3>
+    <div class="actions"><button class="ghost" id="themeBtn" type="button">Changer le thème</button></div>
+  </div>
+  <div class="card">
+    <h3>Sauvegarde</h3>
+    <div class="hint" id="syncState">Les commandes sont gardées dans ce navigateur, sur cet appareil.</div>
+    <div class="hint">Copiez une sauvegarde de temps en temps et gardez-la dans WhatsApp ou une note.</div>
+    <div class="actions">
+      <button class="ghost" id="backup" type="button">Copier la sauvegarde</button>
+      <button class="ghost" id="restoreBtn" type="button">Restaurer une sauvegarde</button>
+    </div>
+    <div class="field" id="restoreBox" hidden>
+      <label for="restoreTxt">Coller la sauvegarde ici</label>
+      <textarea id="restoreTxt" rows="3"></textarea>
+      <button class="ghost" id="restoreGo" type="button">Restaurer</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Réinitialiser</h3>
+    <div class="hint">Efface toutes les commandes et remet les prix de départ (petit 200 FCFA, grand 1 000 FCFA). À utiliser pour repartir de zéro, par exemple après un essai. Copiez d'abord une sauvegarde si vous voulez pouvoir tout récupérer.</div>
+    <div class="actions">
+      <button class="ghost" id="demo" type="button">Ajouter 3 commandes d'exemple</button>
+      <button class="ghost danger" id="wipe" type="button">Réinitialiser le logiciel</button>
+    </div>
+    <div class="hint" id="wipeHint"></div>
+  </div>
+  </div>
+</section>
+
+
+<!-- GUIDE -->
+<section class="view" id="v-guide" hidden>
+  <div class="actions"><button class="ghost" id="closeGuide" type="button">‹ Retour aux réglages</button></div>
+  <h2>Guide d'utilisation</h2>
+  <p class="hint" style="margin:0">Ce guide explique, étape par étape, comment remplacer le cahier par le logiciel. Touchez un titre pour l'ouvrir.</p>
+
+  <details class="gd" open><summary>1. Comprendre l'écran</summary><div class="gb">
+    <p>En bas de l'écran, 5 boutons :</p>
+    <ul>
+      <li><b>Commandes</b> : la liste des commandes d'un jour et ce qu'il faut cuire.</li>
+      <li><b>Clients</b> : chaque client avec son historique et ce qu'il doit.</li>
+      <li><b>Nouvelle</b> (bouton rond vert) : noter une commande.</li>
+      <li><b>Bilan</b> : les ventes et l'argent encaissé.</li>
+      <li><b>Réglages</b> : les prix, la sauvegarde et ce guide.</li>
+    </ul>
+  </div></details>
+
+  <details class="gd"><summary>2. Noter une commande</summary><div class="gb">
+    <p>Quand un client appelle :</p>
+    <ol>
+      <li>Touchez <b>Nouvelle</b>.</li>
+      <li>Écrivez le <b>nom du client</b>. S'il a déjà commandé, son nom apparaît pendant que vous tapez.</li>
+      <li>Touchez <b>+</b> pour le nombre de <b>petits</b> et de <b>grands</b> pains. Le montant se calcule tout seul.</li>
+      <li>Vérifiez le <b>jour</b> de la commande. Ajoutez l'heure, le téléphone ou une remarque si besoin.</li>
+      <li>Choisissez <b>Retrait</b> ou <b>Livraison</b>.</li>
+      <li>Si le client a déjà payé, cochez <b>Déjà payé</b>.</li>
+      <li>Touchez <b>Enregistrer la commande</b>.</li>
+    </ol>
+    <div class="tip">Il faut au moins un nom et un pain (petit ou grand), sinon le logiciel affiche un message rouge.</div>
+  </div></details>
+
+  <details class="gd"><summary>3. Savoir quoi cuire chaque jour</summary><div class="gb">
+    <p>Dans <b>Commandes</b>, le grand bloc vert indique le nombre de <b>petits pains</b> et de <b>grands pains</b> à cuire pour le jour choisi, le montant total et le reste à encaisser.</p>
+    <ul>
+      <li>Les flèches <b>‹ ›</b> changent de jour.</li>
+      <li><b>Aujourd'hui</b> et <b>Demain</b> sont des raccourcis. Le champ date permet de choisir un autre jour.</li>
+      <li>Les boutons <b>En attente, Prêtes, Livrées, À encaisser</b> filtrent la liste.</li>
+      <li>La case <b>Chercher un client</b> retrouve ses commandes sur tous les jours.</li>
+    </ul>
+  </div></details>
+
+  <details class="gd"><summary>3 bis. Voir les jours qui ont des commandes (calendrier)</summary><div class="gb">
+    <ol>
+      <li>Dans <b>Commandes</b>, touchez <b>Calendrier</b>.</li>
+      <li>Les jours qui ont des commandes sont colorés. <b>Rouge</b> : au moins une commande <b>pas encore payée</b> (le chiffre rouge dit combien). <b>Orange</b> : au moins une commande <b>pas encore traitée</b>, c'est-à-dire encore « En attente » (le chiffre orange dit combien). <b>Vert</b> : toutes les commandes du jour sont traitées et payées. Si un jour a les deux cas, il est rouge avec les deux chiffres.</li>
+      <li>Touchez un jour pour afficher ses commandes. Les flèches <b>‹ ›</b> changent de mois.</li>
+    </ol>
+    <p>Quand vous notez une commande, une ligne sous le jour indique aussi combien de commandes sont déjà prévues ce jour-là.</p>
+  </div></details>
+
+  <details class="gd"><summary>4. Suivre une commande, de la cuisson à la livraison</summary><div class="gb">
+    <p>Chaque commande passe par 3 étapes :</p>
+    <ol>
+      <li><b>En attente</b> : la commande est notée.</li>
+      <li><b>Prête</b> : le pain est cuit. Touchez <b>Marquer prête</b>.</li>
+      <li><b>Livrée</b> : le pain est remis au client. Touchez <b>Marquer livrée</b>, ou <b>Livrée</b> si vous n'avez pas utilisé l'étape Prête.</li>
+    </ol>
+    <p>Une erreur ? Touchez <b>Rouvrir</b> pour revenir en arrière.</p>
+  </div></details>
+
+  <details class="gd"><summary>5. Livrer et encaisser l'argent</summary><div class="gb">
+    <p>C'est l'étape la plus importante. Quand vous touchez <b>Livrée</b>, le logiciel demande : <b>« Le client a-t-il payé ? »</b></p>
+    <ul>
+      <li><b>Oui, payé</b> : la commande affiche <b>« Livrée · payée »</b> en vert. C'est terminé.</li>
+      <li><b>Non, pas encore</b> : la commande devient <b>rouge</b> et affiche <b>« Livrée mais argent non reçu »</b> avec le montant.</li>
+    </ul>
+    <div class="warn">Une livraison sans paiement reste signalée tant que vous n'avez pas touché « Encaisser ».</div>
+  </div></details>
+
+  <details class="gd"><summary>6. Quand un client paie plus tard</summary><div class="gb">
+    <ol>
+      <li>Sur l'écran <b>Commandes</b>, un bandeau rouge indique le nombre de livraisons sans paiement et la somme à récupérer, tous jours confondus.</li>
+      <li>Touchez <b>Voir</b> pour afficher uniquement ces livraisons.</li>
+      <li>Quand le client paie, touchez <b>Encaisser</b> sur sa commande. Elle disparaît de la liste.</li>
+      <li>Pour relancer un client, touchez <b>Rappel de paiement</b> : le message est copié, il reste à le coller dans WhatsApp.</li>
+    </ol>
+  </div></details>
+
+  <details class="gd"><summary>7. Modifier ou supprimer une commande</summary><div class="gb">
+    <ul>
+      <li><b>Modifier</b> : change le nom, les quantités, le jour, l'heure ou la remarque.</li>
+      <li><b>Supprimer</b> : touchez une première fois, puis <b>Confirmer la suppression</b> dans les 4 secondes. Cela évite les suppressions par erreur.</li>
+      <li><b>Copier le bon</b> : copie un petit bon de commande (client, quantités, total) à envoyer par WhatsApp.</li>
+    </ul>
+  </div></details>
+
+  <details class="gd"><summary>8. Les clients</summary><div class="gb">
+    <p>L'écran <b>Clients</b> se remplit tout seul : dès la première commande, le client est enregistré avec son nom et son téléphone, et on le retrouve à chaque ouverture. Quand vous écrivez un nom déjà connu, son téléphone se remplit tout seul. Pour chaque client :</p>
+    <ul>
+      <li>le nombre de commandes et de pains achetés, et le total dépensé ;</li>
+      <li><b>« Doit … FCFA »</b> en orange s'il reste de l'argent à recevoir, ou <b>« À jour »</b> en vert ;</li>
+      <li><b>Commander à nouveau</b> : prépare une commande avec ses dernières quantités ;</li>
+      <li><b>Historique</b> : toutes ses commandes passées.</li>
+    </ul>
+  </div></details>
+
+  <details class="gd"><summary>9. Le bilan des ventes</summary><div class="gb">
+    <p>L'écran <b>Bilan</b> montre, sur 7 jours, 30 jours, le mois ou depuis le début : le chiffre d'affaires, l'argent encaissé, le reste à encaisser, le nombre de petits et de grands vendus, un graphique par jour et les meilleurs clients.</p>
+    <p><b>Copier les commandes (tableur CSV)</b> copie les ventes pour les coller dans Excel ou Google Sheets.</p>
+  </div></details>
+
+  <details class="gd"><summary>10. Changer les prix</summary><div class="gb">
+    <p>Dans <b>Réglages</b>, modifiez le <b>prix du petit</b> et du <b>grand</b>. Le nouveau prix s'applique aux nouvelles commandes seulement. Les anciennes gardent le prix du jour où elles ont été prises, donc le bilan reste juste.</p>
+  </div></details>
+
+  <details class="gd"><summary>11. Sauvegarder pour ne rien perdre</summary><div class="gb">
+    <p>Avec le <b>fichier sur le téléphone</b>, les commandes sont gardées dans le navigateur de ce téléphone, pas sur internet. Avec la <b>page en ligne</b>, elles sont enregistrées en ligne (la ligne sous « Sauvegarde », dans Réglages, indique laquelle des deux est active).</p>
+    <ol>
+      <li>Ouvrez toujours le logiciel avec <b>le même navigateur</b> (par exemple Chrome).</li>
+      <li>Ne videz pas les données du navigateur.</li>
+      <li>Une fois par semaine : <b>Réglages</b>, puis <b>Copier la sauvegarde</b>, puis collez le texte dans une note ou un message WhatsApp à vous-même.</li>
+      <li>Pour récupérer vos données sur un nouveau téléphone : <b>Restaurer une sauvegarde</b>, collez le texte, puis touchez <b>Restaurer</b>.</li>
+    </ol>
+    <div class="warn">Sans sauvegarde, un changement de téléphone ou un nettoyage du navigateur efface les commandes.</div>
+  </div></details>
+
+  <details class="gd"><summary>12. Astuces</summary><div class="gb">
+    <ul>
+      <li>Sur Android (Chrome) : menu <b>⋮</b>, puis <b>Ajouter à l'écran d'accueil</b>, pour ouvrir le logiciel comme une application.</li>
+      <li>Notez la commande <b>pendant l'appel</b> : c'est plus sûr que de s'en souvenir plus tard.</li>
+      <li>Chaque soir, ouvrez <b>Demain</b> pour savoir combien de pains préparer.</li>
+      <li>Le bouton <b>Changer le thème</b> dans Réglages passe en mode sombre.</li>
+      <li><b>Ajouter 3 commandes d'exemple</b> (Réglages) sert à s'entraîner. Ensuite, touchez <b>Réinitialiser le logiciel</b> (Réglages, en bas) pour tout effacer et repartir de zéro. Il faut toucher deux fois, pour éviter les erreurs.</li>
+    </ul>
+  </div></details>
+</section>
+</div>
+
+<nav class="nav" aria-label="Navigation">
+  <div class="wrap">
+    <button type="button" data-view="orders" aria-current="page"><svg class="svg-i" viewBox="0 0 24 24"><path d="M9 4h6v3H9z"/><path d="M7 5H5v15h14V5h-2"/><path d="M9 12h6M9 16h4"/></svg>Commandes</button>
+    <button type="button" data-view="clients"><svg class="svg-i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5a3 3 0 010 6M21 20c0-2.6-1.5-4.8-3.6-5.6"/></svg>Clients</button>
+    <button type="button" class="add" data-view="new"><span class="ic" style="color:var(--accent-ink)"><svg class="svg-i" viewBox="0 0 24 24" width="26" height="26"><path d="M12 5v14M5 12h14"/></svg></span>Nouvelle</button>
+    <button type="button" data-view="stats"><svg class="svg-i" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Bilan</button>
+    <button type="button" data-view="settings"><svg class="svg-i" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Réglages</button>
+  </div>
+</nav>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+  var KEY='pain-ble-v1';
+  var state={v:2,shop:'Pain Blé',prices:{petit:200,grand:1000},orders:[],clients:[]};
+  var ui={view:'orders',date:today(),q:'',filter:'all',cq:'',period:7,open:{},pendingDel:null,wipe:false};
+  var draft={petit:0,grand:0,mode:'retrait'};
+  var editingId=null;
+  var $=function(id){return document.getElementById(id)};
+
+  /* ---------- utilitaires ---------- */
+  function pad(n){return n<10?'0'+n:''+n}
+  function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+  function today(){return iso(new Date())}
+  function parse(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+  function addDays(s,n){var p=s.split('-');return iso(new Date(+p[0],+p[1]-1,+p[2]+n))}
+  function longDay(s){return parse(s).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}
+  function fcfa(n){return Math.round(n).toLocaleString('fr-FR').replace(/[  ]/g,' ')+' FCFA'}
+  function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function total(o){return o.petit*o.pp+o.grand*o.pg}
+  function plural(n,w){return n+' '+w+(n>1?'s':'')}
+  function ckey(n){return n.trim().toLowerCase().replace(/\s+/g,' ')}
+  function hash(t){var h=5381;for(var i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return (h>>>0).toString(36)}
+  function clientId(name){return 'c'+hash(ckey(name))}
+  function ensureClients(){
+    var have={},added=false;
+    state.clients.forEach(function(c){have[c.id]=1});
+    state.orders.forEach(function(o){
+      var id=clientId(o.name);
+      if(!have[id]){have[id]=1;added=true;state.clients.push({id:id,name:o.name,phone:o.phone||'',created:o.created||Date.now()})}
+    });
+    return added;
+  }
+  function touchClient(name,phone){
+    var id=clientId(name),c=state.clients.filter(function(x){return x.id===id})[0];
+    if(!c)state.clients.push({id:id,name:name,phone:phone||'',created:Date.now()});
+    else{c.name=name;if(phone)c.phone=phone}
+  }
+  function relDay(s){var t=today();return s===t?"Aujourd'hui":s===addDays(t,1)?'Demain':s===addDays(t,-1)?'Hier':String(parse(s).getFullYear())}
+
+  function load(){
+    try{
+      var raw=localStorage.getItem(KEY);
+      if(!raw)return;
+      var d=JSON.parse(raw);
+      if(!d||!Array.isArray(d.orders))return;
+      if(d.prices){state.prices=d.prices;if(!d.v&&state.prices.grand===400)state.prices.grand=1000}
+      if(d.shop)state.shop=d.shop;
+      state.orders=d.orders;
+      if(Array.isArray(d.clients))state.clients=d.clients;
+    }catch(e){}
+    migrate();
+  }
+  function migrate(){
+    state.orders.forEach(function(o){
+      if(!o.status)o.status=o.delivered?'livree':'attente';
+      if(o.pp==null)o.pp=state.prices.petit;
+      if(o.pg==null)o.pg=state.prices.grand;
+      o.time=o.time||'';o.mode=o.mode||'retrait';o.petit=+o.petit||0;o.grand=+o.grand||0;
+    });
+    state.v=2;
+    if(!Array.isArray(state.clients))state.clients=[];
+    return ensureClients();
+  }
+  function cacheLocal(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+  function save(){cacheLocal();pushDb()}
+
+  var toastT;
+  function toast(m){var t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){t.hidden=true},2400)}
+  function copyText(text,ok){
+    function fb(){
+      var ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');
+      ta.style.cssText='position:fixed;left:16px;right:16px;bottom:90px;height:140px;z-index:9';
+      document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');toast(ok)}catch(e){toast('Sélectionnez le texte et copiez-le')}
+      setTimeout(function(){ta.remove()},6000);
+    }
+    try{navigator.clipboard.writeText(text).then(function(){toast(ok)},fb)}catch(e){fb()}
+  }
+
+  /* ---------- enregistrement en ligne (capacité db) ---------- */
+  var DB=null,saved={orders:{},clients:{}},savedSettings='',queue=Promise.resolve(),warned=false;
+  function sig(o){return JSON.stringify(Object.keys(o).sort().map(function(k){return [k,o[k]]}))}
+  function settingsDoc(){return {shop:state.shop,prices:{petit:state.prices.petit,grand:state.prices.grand}}}
+  function listOf(c){return c==='orders'?state.orders:state.clients}
+  function syncMsg(t,err){
+    var el=$('syncState');if(el){el.textContent=t;el.style.color=err?'var(--danger)':''}
+    if(err&&!warned){warned=true;toast('Enregistrement en ligne impossible pour le moment')}
+  }
+  function storageOk(){
+    try{var k=KEY+'-test';localStorage.setItem(k,'1');var ok=localStorage.getItem(k)==='1';localStorage.removeItem(k);return ok}catch(e){return false}
+  }
+  function updateStoreWarn(){var w=$('storeWarn');if(w)w.hidden=!!DB||storageOk()}
+  function pushDb(settingsOnly){
+    if(!DB)return;
+    var ops=[];
+    if(!settingsOnly){
+      ['orders','clients'].forEach(function(c){
+        var ids={};
+        listOf(c).forEach(function(o){ids[o.id]=1;var sg=sig(o);if(saved[c][o.id]!==sg)ops.push({k:'set',c:c,id:o.id,sg:sg})});
+        Object.keys(saved[c]).forEach(function(id){if(!ids[id])ops.push({k:'del',c:c,id:id})});
+      });
+    }
+    var ss=sig(settingsDoc());if(ss!==savedSettings)ops.push({k:'cfg',sg:ss});
+    ops.forEach(function(op){
+      queue=queue.then(function(){
+        if(op.k==='set'){
+          var o=listOf(op.c).filter(function(x){return x.id===op.id})[0];if(!o)return;
+          return DB.collection(op.c).doc(op.id).set(JSON.parse(JSON.stringify(o))).then(function(){saved[op.c][op.id]=op.sg});
+        }
+        if(op.k==='del')return DB.collection(op.c).doc(op.id).delete().then(function(){delete saved[op.c][op.id]});
+        return DB.doc('meta/settings').set(settingsDoc()).then(function(){savedSettings=op.sg});
+      }).catch(function(e){syncMsg('Enregistrement en ligne impossible ('+((e&&e.code)||'erreur')+'). Les données restent sur cet appareil.',true)});
+    });
+  }
+  function attachDb(db){
+    DB=db;updateStoreWarn();
+    var first={orders:true,clients:true},okMsg='Vos commandes et vos clients sont enregistrés en ligne : vous les retrouvez quand vous revenez.';
+    syncMsg('Connexion à l\'enregistrement en ligne…');
+    function watch(c){
+      db.collection(c).onSnapshot(function(snap){
+        if(snap.metadata.fromCache&&snap.empty)return;
+        if(first[c]&&snap.empty&&listOf(c).length){first[c]=false;saved[c]={};pushDb();syncMsg(okMsg);return}
+        first[c]=false;
+        var arr=[];
+        snap.docs.forEach(function(d){var o=d.data();if(o&&o.id)arr.push(JSON.parse(JSON.stringify(o)))});
+        if(c==='orders')state.orders=arr;else state.clients=arr;
+        var added=migrate();
+        saved[c]={};listOf(c).forEach(function(o){saved[c][o.id]=sig(o)});
+        cacheLocal();render();
+        syncMsg(okMsg);
+        if(added)pushDb();
+      },function(e){syncMsg('Enregistrement en ligne indisponible ('+((e&&e.code)||'erreur')+').',true)});
+    }
+    watch('orders');watch('clients');
+    db.doc('meta/settings').onSnapshot(function(d){
+      if(d.metadata.fromCache&&!d.exists)return;
+      if(!d.exists){savedSettings='';pushDb(true);return}
+      var v=d.data();
+      if(v){
+        if(v.shop)state.shop=String(v.shop);
+        if(v.prices)state.prices={petit:+v.prices.petit||0,grand:+v.prices.grand||0};
+        savedSettings=sig(settingsDoc());cacheLocal();fillSettings();render();
+      }
+    },function(e){syncMsg('Enregistrement en ligne indisponible ('+((e&&e.code)||'erreur')+').',true)});
+  }
+  function initDb(){
+    var c=window.claude;
+    if(!c||typeof c.use!=='function'){updateStoreWarn();return}
+    c.use('db').then(function(db){if(db)attachDb(db);else updateStoreWarn()}).catch(function(){updateStoreWarn()});
+  }
+
+  /* ---------- navigation ---------- */
+  function show(v){
+    ui.view=v;
+    ['orders','new','clients','stats','settings','guide'].forEach(function(k){$('v-'+k).hidden=(k!==v)});
+    var btns=document.querySelectorAll('.nav [data-view]');
+    for(var i=0;i<btns.length;i++){if(btns[i].dataset.view===(v==='guide'?'settings':v))btns[i].setAttribute('aria-current','page');else btns[i].removeAttribute('aria-current')}
+    if(v==='new'&&!editingId)prepareNew();
+    render();
+    window.scrollTo(0,0);
+  }
+  document.querySelector('.nav').addEventListener('click',function(e){
+    var b=e.target.closest('[data-view]');if(!b)return;
+    if(ui.view==='new'&&b.dataset.view!=='new')editingId=null;
+    show(b.dataset.view);
+  });
+
+  /* ---------- commandes ---------- */
+  var STATUS={attente:'En attente',prete:'Prête',livree:'Livrée'};
+  function dayOrders(d){return state.orders.filter(function(o){return o.date===d})}
+  function sortDay(a,b){return (a.time||'99:99')<(b.time||'99:99')?-1:(a.time||'99:99')>(b.time||'99:99')?1:a.created-b.created}
+
+  function renderCalendar(){
+    var box=$('calendar');$('chipCal').setAttribute('aria-pressed',!!ui.calOpen);
+    box.hidden=!ui.calOpen;if(!ui.calOpen)return;
+    var m=ui.calMonth||ui.date.slice(0,7),y=+m.slice(0,4),mo=+m.slice(5,7);
+    var first=new Date(y,mo-1,1),days=new Date(y,mo,0).getDate(),lead=(first.getDay()+6)%7,info={};
+    state.orders.forEach(function(o){
+      if(o.date.slice(0,7)!==m)return;
+      var x=info[o.date]||(info[o.date]={n:0,p:0,g:0,u:0,w:0});
+      x.n++;x.p+=o.petit;x.g+=o.grand;if(!o.paid)x.u++;if(o.status==='attente')x.w++;
+    });
+    var t=today();
+    var h='<div class="ch"><button class="step" data-cn="-1" type="button" aria-label="Mois précédent">‹</button><b>'+esc(first.toLocaleDateString('fr-FR',{month:'long',year:'numeric'}))+'</b><button class="step" data-cn="1" type="button" aria-label="Mois suivant">›</button></div><div class="grid">';
+    ['L','M','M','J','V','S','D'].forEach(function(d){h+='<div class="dow">'+d+'</div>'});
+    for(var i=0;i<lead;i++)h+='<div></div>';
+    for(var d=1;d<=days;d++){
+      var ds=m+'-'+pad(d),x=info[ds];
+      var cls='d'+(x?(x.u?' unpaid':x.w?' pending':' settled'):'')+(ds===t?' today':'')+(ds===ui.date?' sel':'');
+      h+='<button type="button" class="'+cls+'" data-d="'+ds+'" aria-label="'+esc(longDay(ds))+(x?' : '+plural(x.n,'commande')+', '+plural(x.p,'petit')+', '+plural(x.g,'grand')+(x.u?', '+x.u+' pas encore payée'+(x.u>1?'s':''):'')+(x.w?', '+x.w+' pas encore traitée'+(x.w>1?'s':''):''):' : aucune commande')+'"><span>'+d+'</span>'+(x?'<span class="bd">'+(x.u?'<span class="n r">'+x.u+'</span>':'')+(x.w?'<span class="n o">'+x.w+'</span>':'')+(!x.u&&!x.w?'<span class="n v">'+x.n+'</span>':'')+'</span>':'')+'</button>';
+    }
+    h+='</div><div class="legend"><span><i style="background:var(--danger)"></i>Rouge : commande pas encore payée (le chiffre = combien)</span><span><i style="background:var(--warn)"></i>Orange : commande pas encore traitée (en attente)</span><span><i style="background:var(--good)"></i>Vert : tout est traité et payé</span></div>'+
+       '<button class="ghost today-btn" data-cn="0" type="button">Revenir à aujourd\'hui</button>';
+    box.innerHTML=h;
+  }
+  function updateDateInfo(){
+    var d=$('date').value,el=$('dateInfo');if(!el)return;
+    if(!d){el.textContent='';return}
+    var os=state.orders.filter(function(o){return o.date===d&&o.id!==editingId}),p=0,g=0;
+    os.forEach(function(o){p+=o.petit;g+=o.grand});
+    el.textContent=os.length?'Déjà '+plural(os.length,'commande')+' ce jour-là : '+plural(p,'petit')+', '+plural(g,'grand')+'.':'Aucune commande notée ce jour-là.';
+  }
+  function isDebt(o){return o.status==='livree'&&!o.paid}
+  function renderOrders(){
+    var t=today();
+    $('dayLabel').innerHTML=esc(longDay(ui.date))+'<small>'+relDay(ui.date)+'</small>';
+    $('chipToday').setAttribute('aria-pressed',ui.date===t);
+    $('chipTomorrow').setAttribute('aria-pressed',ui.date===addDays(t,1));
+    $('pickDate').value=ui.date;
+    renderCalendar();
+
+    var debts=state.orders.filter(isDebt).sort(function(a,b){return a.date===b.date?sortDay(a,b):(a.date<b.date?-1:1)}),debtSum=0;
+    debts.forEach(function(o){debtSum+=total(o)});
+    var ab=$('alertbar');
+    ab.hidden=!(debts.length&&!ui.debt);
+    if(!ab.hidden)ab.innerHTML='<div><b>'+plural(debts.length,'livraison')+' sans paiement</b><span>'+fcfa(debtSum)+' à récupérer</span></div><button class="ghost" id="seeDebt" type="button">Voir</button>';
+    $('dayTools').hidden=!!ui.debt;$('debtHead').hidden=!ui.debt;
+
+    var q=ui.q.trim().toLowerCase(),list;
+    if(ui.debt){
+      $('debtHead').innerHTML='<div class="actions"><button class="ghost" id="backDay" type="button">‹ Retour aux commandes</button></div>'+
+        '<section class="board warnb"><div class="lbl">Livrées, argent non reçu</div><div class="bake"><div><b>'+debts.length+'</b><span>commande'+(debts.length>1?'s':'')+'</span></div><div><b style="font-size:1.5rem">'+fcfa(debtSum)+'</b><span>à récupérer</span></div></div></section>';
+      list=debts;
+    }else{
+      var day=dayOrders(ui.date),p=0,g=0,tot=0,paid=0;
+      day.forEach(function(o){p+=o.petit;g+=o.grand;var x=total(o);tot+=x;if(o.paid)paid+=x});
+      $('board').innerHTML='<div class="lbl">À cuire pour ce jour</div>'+
+        '<div class="bake"><div><b>'+p+'</b><span>petits pains</span></div><div><b>'+g+'</b><span>grands pains</span></div></div>'+
+        '<div class="kpis"><div><small>Commandes</small><b>'+day.length+'</b></div><div><small>Montant</small><b>'+fcfa(tot)+'</b></div><div><small>Reste à encaisser</small><b>'+fcfa(tot-paid)+'</b></div></div>';
+      var counts={all:day.length,attente:0,prete:0,livree:0,impaye:0};
+      day.forEach(function(o){counts[o.status]++;if(!o.paid)counts.impaye++});
+      var fl=[['all','Toutes'],['attente','En attente'],['prete','Prêtes'],['livree','Livrées'],['impaye','À encaisser']];
+      $('filters').innerHTML=q?'':fl.map(function(f){return '<button class="chip" type="button" data-f="'+f[0]+'" aria-pressed="'+(ui.filter===f[0])+'">'+f[1]+' ('+counts[f[0]]+')</button>'}).join('');
+      if(q){
+        list=state.orders.filter(function(o){return o.name.toLowerCase().indexOf(q)>=0}).sort(function(a,b){return a.date===b.date?sortDay(a,b):(a.date<b.date?1:-1)});
+      }else{
+        list=day.filter(function(o){return ui.filter==='all'||(ui.filter==='impaye'?!o.paid:o.status===ui.filter)}).sort(sortDay);
+      }
+    }
+    var ul=$('list');
+    if(!list.length){
+      var none=state.orders.length===0;
+      ul.innerHTML='<li class="empty"><b>'+(ui.debt?'Tout est payé':q?'Aucun client trouvé':none?'Aucune commande enregistrée':'Aucune commande ici')+'</b><span>'+
+        (ui.debt?'Aucune livraison en attente d\'argent.':q?'Essayez un autre nom.':'Touchez « Nouvelle » en bas quand un client appelle.')+'</span></li>';
+      return;
+    }
+    var html='',last='';
+    list.forEach(function(o){
+      if((q||ui.debt)&&o.date!==last){last=o.date;html+='<li class="lab group">'+esc(longDay(o.date))+'</li>'}
+      var sure=ui.pendingDel===o.id,x=total(o),debt=isDebt(o),asking=ui.askPay===o.id;
+      var st=o.status==='livree'?(o.paid?'<span class="badge b-paye">Livrée · payée</span>':'<span class="badge b-alert">Livrée · non payée</span>'):'<span class="badge b-'+o.status+'">'+STATUS[o.status]+'</span>';
+      var adv;
+      if(asking){
+        adv='<div class="ask"><span>Le client a-t-il payé ?</span><button class="adv" data-act="payyes" type="button">Oui, payé</button><button class="adv no" data-act="payno" type="button">Non, pas encore</button><button class="adv cancel" data-act="askcancel" type="button">Annuler</button></div>';
+      }else if(o.status==='attente'){
+        adv='<button class="adv" data-act="prete" type="button">Marquer prête</button><button class="adv rev" data-act="deliver" type="button">Livrée</button>';
+      }else if(o.status==='prete'){
+        adv='<button class="adv" data-act="deliver" type="button">Marquer livrée</button>';
+      }else{
+        adv='<button class="adv rev" data-act="rev" type="button">Rouvrir</button>';
+      }
+      html+='<li class="order'+(o.status==='livree'&&o.paid?' done':'')+(debt?' alert':'')+'" data-id="'+o.id+'">'+
+        '<div class="head"><div class="who"><b>'+esc(o.name)+'</b>'+(o.phone?'<small>'+esc(o.phone)+'</small>':'')+'</div>'+
+        '<div class="amount">'+fcfa(x)+'<br>'+st+'</div></div>'+
+        '<div class="items">'+(o.petit?'<span class="tag">'+plural(o.petit,'petit')+'</span>':'')+(o.grand?'<span class="tag">'+plural(o.grand,'grand')+'</span>':'')+
+          '<span class="meta">'+(o.time?o.time.replace(':','h')+' · ':'')+(o.mode==='livraison'?'Livraison':'Retrait')+'</span></div>'+
+        (debt?'<div class="owe">Livrée mais argent non reçu : <b>'+fcfa(x)+'</b></div>':'')+
+        (o.note?'<div class="note">'+esc(o.note)+'</div>':'')+
+        '<div class="ostat">'+adv+(asking?'':'<button class="pay '+(o.paid?'on':debt?'due':'off')+'" data-act="pay" type="button" aria-pressed="'+!!o.paid+'">'+(o.paid?'✓ Payé':'Encaisser '+fcfa(x))+'</button>')+'</div>'+
+        '<div class="tools"><button data-act="rcpt" type="button">Copier le bon</button>'+(debt?'<button data-act="remind" type="button">Rappel de paiement</button>':'')+'<button data-act="edit" type="button">Modifier</button>'+
+          '<button class="sp'+(sure?' sure':'')+'" data-act="del" type="button">'+(sure?'Confirmer la suppression':'Supprimer')+'</button></div></li>';
+    });
+    ul.innerHTML=html;
+  }
+
+  function receipt(o){
+    var l=[state.shop+' - Bon de commande','Client : '+o.name,'Pour le : '+longDay(o.date)+(o.time?' à '+o.time.replace(':','h'):''),(o.mode==='livraison'?'Livraison':'Retrait')];
+    if(o.petit)l.push(plural(o.petit,'petit')+' x '+fcfa(o.pp)+' = '+fcfa(o.petit*o.pp));
+    if(o.grand)l.push(plural(o.grand,'grand')+' x '+fcfa(o.pg)+' = '+fcfa(o.grand*o.pg));
+    l.push('Total : '+fcfa(total(o)));l.push(o.paid?'Réglé':'À régler');
+    if(o.note)l.push('Remarque : '+o.note);
+    return l.join('\n');
+  }
+
+  $('v-orders').addEventListener('click',function(e){
+    if(e.target.closest('#seeDebt')){ui.debt=true;ui.askPay=null;render();window.scrollTo(0,0)}
+    else if(e.target.closest('#backDay')){ui.debt=false;ui.askPay=null;render();window.scrollTo(0,0)}
+  });
+  $('list').addEventListener('click',function(e){
+    var b=e.target.closest('[data-act]');if(!b)return;
+    var li=b.closest('.order'),id=li.dataset.id,act=b.dataset.act;
+    var o=state.orders.filter(function(x){return x.id===id})[0];if(!o)return;
+    if(act==='prete'){o.status='prete';save();render()}
+    else if(act==='deliver'){
+      if(o.paid){o.status='livree';save();render();toast('Livrée et payée')}
+      else{ui.askPay=id;render()}
+    }
+    else if(act==='payyes'){o.status='livree';o.paid=true;ui.askPay=null;save();render();toast('Livrée et payée')}
+    else if(act==='payno'){o.status='livree';o.paid=false;ui.askPay=null;save();render();toast('Livrée, argent non reçu. Elle reste dans les impayés.')}
+    else if(act==='askcancel'){ui.askPay=null;render()}
+    else if(act==='rev'){o.status='prete';ui.askPay=null;save();render()}
+    else if(act==='pay'){o.paid=!o.paid;ui.askPay=null;save();render();if(o.paid)toast('Paiement reçu')}
+    else if(act==='rcpt'){copyText(receipt(o),'Bon de commande copié')}
+    else if(act==='remind'){copyText('Bonjour '+o.name+', petit rappel de '+state.shop+' : il reste '+fcfa(total(o))+' à régler pour la commande de pain blé du '+longDay(o.date)+'. Merci !','Message de rappel copié')}
+    else if(act==='edit'){startEdit(o)}
+    else if(act==='del'){
+      if(ui.pendingDel===id){state.orders=state.orders.filter(function(x){return x.id!==id});ui.pendingDel=null;save();render();toast('Commande supprimée')}
+      else{ui.pendingDel=id;render();setTimeout(function(){if(ui.pendingDel===id){ui.pendingDel=null;render()}},4000)}
+    }
+  });
+  $('filters').addEventListener('click',function(e){var b=e.target.closest('[data-f]');if(!b)return;ui.filter=b.dataset.f;render()});
+  $('prev').onclick=function(){ui.date=addDays(ui.date,-1);render()};
+  $('next').onclick=function(){ui.date=addDays(ui.date,1);render()};
+  $('chipToday').onclick=function(){ui.date=today();render()};
+  $('chipTomorrow').onclick=function(){ui.date=addDays(today(),1);render()};
+  $('pickDate').addEventListener('change',function(){if(this.value){ui.date=this.value;render()}});
+  $('search').addEventListener('input',function(){ui.q=this.value;render()});
+  $('chipCal').onclick=function(){ui.calOpen=!ui.calOpen;ui.calMonth=ui.date.slice(0,7);render()};
+  $('calendar').addEventListener('click',function(e){
+    var n=e.target.closest('[data-cn]');
+    if(n){
+      var v=+n.dataset.cn;
+      if(v===0){ui.calMonth=today().slice(0,7);ui.date=today()}
+      else{var q=(ui.calMonth||ui.date.slice(0,7)).split('-'),dt=new Date(+q[0],+q[1]-1+v,1);ui.calMonth=dt.getFullYear()+'-'+pad(dt.getMonth()+1)}
+      render();return;
+    }
+    var d=e.target.closest('[data-d]');
+    if(d){
+      ui.date=d.dataset.d;ui.calOpen=false;ui.q='';$('search').value='';ui.filter='all';render();
+      var c=dayOrders(ui.date).length;
+      toast(c?plural(c,'commande')+' le '+longDay(ui.date):'Aucune commande le '+longDay(ui.date));
+      window.scrollTo(0,0);
+    }
+  });
+  $('date').addEventListener('change',updateDateInfo);
+  $('date').addEventListener('input',updateDateInfo);
+
+  /* ---------- formulaire ---------- */
+  function capName(v){return v.replace(/(^|[\s\-'’])(\p{Ll})/gu,function(m,a,b){return a+b.toUpperCase()})}
+  $('name').addEventListener('input',function(e){
+    if(e&&e.isComposing)return;
+    var el=this,pos=el.selectionStart,nv=capName(el.value);
+    if(nv!==el.value){var same=nv.length===el.value.length;el.value=nv;if(same&&pos!=null){try{el.setSelectionRange(pos,pos)}catch(x){}}}
+    autoFillClient();updateNameInfo();
+  });
+  var autoPhone='';
+  function findClient(name){var k=ckey(name);if(!k)return null;var l=clients();for(var i=0;i<l.length;i++)if(l[i].key===k)return l[i];return null}
+  function autoFillClient(){
+    var m=findClient($('name').value),ph=$('phone');
+    if(m&&m.phone&&(!ph.value||ph.value===autoPhone)){ph.value=m.phone;autoPhone=m.phone}
+    else if(!m&&autoPhone&&ph.value===autoPhone){ph.value='';autoPhone=''}
+  }
+  function updateNameInfo(){
+    var el=$('nameInfo');if(!el)return;
+    var v=$('name').value.trim();
+    if(!v){el.textContent='';el.style.color='';return}
+    var c=findClient(v);
+    if(c&&c.n){el.textContent='Client connu : '+plural(c.n,'commande')+(c.due?', doit '+fcfa(c.due):'')+'.';el.style.color=c.due?'var(--warn)':''}
+    else if(c){el.textContent='Client déjà enregistré.';el.style.color=''}
+    else{el.textContent='Nouveau client : il sera enregistré avec cette commande.';el.style.color=''}
+  }
+
+  function setMode(m){draft.mode=m;var bs=document.querySelectorAll('[data-mode]');for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-pressed',bs[i].dataset.mode===m)}
+  function renderDraft(){
+    $('qPetit').textContent=draft.petit;$('qGrand').textContent=draft.grand;
+    var pp=editingId?cur().pp:state.prices.petit,pg=editingId?cur().pg:state.prices.grand;
+    $('hPetit').textContent=fcfa(pp)+' le pain';$('hGrand').textContent=fcfa(pg)+' le pain';
+    $('formTotal').textContent=fcfa(draft.petit*pp+draft.grand*pg);
+    updateDateInfo();updateNameInfo();
+  }
+  function cur(){return state.orders.filter(function(o){return o.id===editingId})[0]}
+  function prepareNew(pre){
+    editingId=null;pre=pre||{};
+    draft={petit:pre.petit||0,grand:pre.grand||0,mode:'retrait'};
+    $('name').value=pre.name||'';$('phone').value=pre.phone||'';$('note').value='';$('time').value='';
+    $('date').value=ui.date<today()?today():ui.date;$('paidNow').checked=false;
+    $('formTitle').textContent='Nouvelle commande';$('save').textContent='Enregistrer la commande';
+    $('form').classList.remove('editing');$('err').textContent='';setMode('retrait');renderDraft();
+  }
+  function startEdit(o){
+    editingId=o.id;draft={petit:o.petit,grand:o.grand,mode:o.mode};
+    $('name').value=o.name;$('phone').value=o.phone||'';$('note').value=o.note||'';$('time').value=o.time||'';
+    $('date').value=o.date;$('paidNow').checked=!!o.paid;
+    $('formTitle').textContent='Modifier la commande';$('save').textContent='Enregistrer les changements';
+    $('form').classList.add('editing');$('err').textContent='';setMode(o.mode);
+    show('new');
+  }
+  $('form').addEventListener('click',function(e){
+    var b=e.target.closest('[data-q]');
+    if(b){var k=b.dataset.q;draft[k]=Math.max(0,Math.min(999,draft[k]+(+b.dataset.d)));$('err').textContent='';renderDraft();return}
+    var m=e.target.closest('[data-mode]');if(m)setMode(m.dataset.mode);
+  });
+  $('cancel').onclick=function(){editingId=null;show('orders')};
+  function fail(m,el){$('err').textContent=m;toast(m);try{$('err').scrollIntoView({block:'center'})}catch(x){}if(el)el.focus()}
+  function submitOrder(e){
+    if(e&&e.preventDefault)e.preventDefault();
+    var name=capName($('name').value.trim().replace(/\s+/g,' ')),date=$('date').value;
+    if(!name){fail('Écrivez le nom du client.',$('name'));return}
+    if(draft.petit+draft.grand<1){fail('Choisissez au moins un pain, petit ou grand, avec les boutons + .');return}
+    if(!date){fail('Choisissez le jour de la commande.',$('date'));return}
+    var data={name:name,phone:$('phone').value.trim(),note:$('note').value.trim(),time:$('time').value,mode:draft.mode,petit:draft.petit,grand:draft.grand,date:date,paid:$('paidNow').checked};
+    touchClient(name,data.phone);
+    if(editingId){
+      state.orders=state.orders.map(function(o){return o.id===editingId?Object.assign({},o,data):o});
+      toast('Commande modifiée');
+    }else{
+      state.orders.push(Object.assign({id:uid(),created:Date.now(),status:'attente',pp:state.prices.petit,pg:state.prices.grand},data));
+      toast('Commande enregistrée pour '+name);
+    }
+    save();editingId=null;ui.date=date;ui.q='';$('search').value='';ui.filter='all';show('orders');
+  }
+  $('form').addEventListener('submit',submitOrder);
+  $('save').addEventListener('click',submitOrder);
+
+  /* ---------- clients ---------- */
+  function clients(){
+    var map={};
+    function get(name){return map[ckey(name)]||(map[ckey(name)]={key:ckey(name),id:clientId(name),name:name,phone:'',n:0,p:0,g:0,spent:0,due:0,last:null,orders:[]})}
+    state.clients.forEach(function(r){var c=get(r.name);c.name=r.name;if(r.phone)c.phone=r.phone});
+    state.orders.slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:a.created-b.created}).forEach(function(o){
+      var c=get(o.name);
+      c.name=o.name;if(o.phone)c.phone=o.phone;c.n++;c.p+=o.petit;c.g+=o.grand;var x=total(o);c.spent+=x;if(!o.paid)c.due+=x;c.last=o;c.orders.push(o);
+    });
+    function ld(c){return c.last?c.last.date:''}
+    return Object.keys(map).map(function(k){return map[k]}).sort(function(a,b){return b.due-a.due||(ld(b)<ld(a)?-1:ld(b)>ld(a)?1:0)||(a.name<b.name?-1:1)});
+  }
+  function renderClients(){
+    var q=ui.cq.trim().toLowerCase(),list=clients().filter(function(c){return !q||c.name.toLowerCase().indexOf(q)>=0});
+    var el=$('clist');
+    if(!list.length){el.innerHTML='<div class="empty"><b>'+(q?'Aucun client trouvé':'Pas encore de clients')+'</b><span>'+(q?'Essayez un autre nom.':'Chaque client apparaît ici dès sa première commande.')+'</span></div>';return}
+    el.innerHTML=list.map(function(c){
+      var open=!!ui.open[c.key];
+      return '<div class="cl" data-k="'+esc(c.key)+'"><div class="head"><div><b>'+esc(c.name)+'</b>'+(c.phone?'<small>'+esc(c.phone)+'</small>':'')+
+        '<small>'+plural(c.n,'commande')+' · '+plural(c.p,'petit')+' · '+plural(c.g,'grand')+'</small></div>'+
+        '<div class="amount">'+fcfa(c.spent)+'<br>'+(c.due?'<span class="badge b-du">Doit '+fcfa(c.due)+'</span>':'<span class="badge b-paye">À jour</span>')+'</div></div>'+
+        '<div class="actions"><button class="ghost" data-ca="again" type="button">'+(c.last?'Commander à nouveau':'Nouvelle commande')+'</button>'+(c.n?'':'<button class="ghost" data-ca="remove" type="button">Retirer ce client</button>')+
+        '<button class="ghost" data-ca="hist" type="button">'+(open?'Masquer l\'historique':'Historique')+'</button>'+
+        (c.due?'<button class="ghost" data-ca="remind" type="button">Rappel de paiement</button>':'')+'</div>'+
+        (open?'<ul class="hist">'+c.orders.slice().reverse().map(function(o){return '<li><span>'+esc(parse(o.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}))+' · '+(o.petit?plural(o.petit,'petit'):'')+(o.petit&&o.grand?' + ':'')+(o.grand?plural(o.grand,'grand'):'')+'</span><span>'+fcfa(total(o))+' '+(o.paid?'✓':'<b style="color:var(--warn)">dû</b>')+'</span></li>'}).join('')+'</ul>':'')+'</div>';
+    }).join('');
+  }
+  $('csearch').addEventListener('input',function(){ui.cq=this.value;renderClients()});
+  $('clist').addEventListener('click',function(e){
+    var b=e.target.closest('[data-ca]');if(!b)return;
+    var k=b.closest('.cl').dataset.k,c=clients().filter(function(x){return x.key===k})[0];if(!c)return;
+    var a=b.dataset.ca;
+    if(a==='hist'){ui.open[k]=!ui.open[k];renderClients()}
+    else if(a==='again'){ui.view='new';editingId=null;show('new');prepareNew({name:c.name,phone:c.phone,petit:c.last?c.last.petit:0,grand:c.last?c.last.grand:0})}
+    else if(a==='remove'){state.clients=state.clients.filter(function(x){return x.id!==c.id});save();renderClients();toast('Client retiré de la liste')}
+    else if(a==='remind'){copyText('Bonjour '+c.name+', petit rappel de '+state.shop+' : il reste '+fcfa(c.due)+' à régler pour vos commandes de pain blé. Merci !','Message de rappel copié')}
+  });
+
+  /* ---------- bilan ---------- */
+  var PERIODS=[[7,'7 jours'],[30,'30 jours'],['mois','Ce mois'],['tout','Tout']];
+  function range(){
+    var t=today();
+    if(ui.period==='mois')return [t.slice(0,8)+'01',t];
+    if(ui.period==='tout')return ['0000-00-00',t];
+    return [addDays(t,-(ui.period-1)),t];
+  }
+  function renderStats(){
+    $('periods').innerHTML=PERIODS.map(function(p){return '<button class="chip" type="button" data-p="'+p[0]+'" aria-pressed="'+(ui.period===p[0])+'">'+p[1]+'</button>'}).join('');
+    var r=range(),os=state.orders.filter(function(o){return o.date>=r[0]&&o.date<=r[1]});
+    var p=0,g=0,rev=0,paid=0;
+    os.forEach(function(o){p+=o.petit;g+=o.grand;var x=total(o);rev+=x;if(o.paid)paid+=x});
+    $('tiles').innerHTML=[['Chiffre d\'affaires',fcfa(rev),''],['Encaissé',fcfa(paid),''],['Reste à encaisser',fcfa(rev-paid),'due'],['Commandes',String(os.length),''],['Petits vendus',String(p),''],['Grands vendus',String(g),'']].map(function(t){return '<div class="tile '+t[2]+'"><small>'+t[0]+'</small><b>'+t[1]+'</b></div>'}).join('');
+    renderChart(os);
+    var by={};os.forEach(function(o){var k=ckey(o.name);by[k]=by[k]||{name:o.name,v:0,n:0};by[k].v+=total(o);by[k].n++});
+    var top=Object.keys(by).map(function(k){return by[k]}).sort(function(a,b){return b.v-a.v}).slice(0,5);
+    $('topbox').innerHTML='<h3>Meilleurs clients</h3>'+(top.length?'<ul class="top">'+top.map(function(c){return '<li><div class="r"><span>'+esc(c.name)+' <small style="color:var(--muted)">('+plural(c.n,'commande')+')</small></span><span>'+fcfa(c.v)+'</span></div><div class="bar"><i style="width:'+Math.round(c.v/top[0].v*100)+'%"></i></div></li>'}).join('')+'</ul>':'<div class="hint">Aucune vente sur cette période.</div>');
+  }
+  function renderChart(os){
+    var t=today(),n,start;
+    if(ui.period==='mois'){start=t.slice(0,8)+'01';n=+t.slice(8)}
+    else if(ui.period===7){n=7;start=addDays(t,-6)}
+    else{n=30;start=addDays(t,-29)}
+    var days=[],i,idx={};
+    for(i=0;i<n;i++){var d=addDays(start,i);idx[d]=i;days.push({d:d,p:0,g:0})}
+    os.forEach(function(o){var j=idx[o.date];if(j!=null){days[j].p+=o.petit;days[j].g+=o.grand}});
+    var max=0;days.forEach(function(x){max=Math.max(max,x.p+x.g)});
+    var note=ui.period==='tout'?'Les 30 derniers jours':'';
+    if(!max){$('chartbox').innerHTML='<h3>Pains vendus par jour</h3><div class="hint">Aucune vente sur cette période.</div>';return}
+    var rough=max/3,pw=Math.pow(10,Math.floor(Math.log10(rough))),m=rough/pw,step=(m<=1?1:m<=2?2:m<=5?5:10)*pw,top=step*Math.ceil(max/step);
+    var W=340,H=180,L=30,R=4,T=8,B=24,iw=W-L-R,ih=H-T-B,slot=iw/n,bw=Math.max(3,slot*0.68);
+    function y(v){return T+ih*(1-v/top)}
+    var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Pains vendus par jour, petits et grands">';
+    for(var v=0;v<=top+0.001;v+=step){s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="var(--line)" stroke-width="1"/><text x="'+(L-5)+'" y="'+(y(v)+3.5)+'" text-anchor="end">'+v+'</text>'}
+    var every=n<=7?1:Math.ceil(n/6);
+    days.forEach(function(x,k){
+      var cx=L+slot*k+slot/2,bx=cx-bw/2,yg=y(x.g),yt=y(x.g+x.p);
+      if(x.g)s+='<rect x="'+bx+'" y="'+yg+'" width="'+bw+'" height="'+(y(0)-yg)+'" rx="2" fill="var(--accent)"/>';
+      if(x.p)s+='<rect x="'+bx+'" y="'+yt+'" width="'+bw+'" height="'+(yg-yt)+'" rx="2" fill="var(--wheat)"/>';
+      if(k%every===0||k===n-1&&every===1){
+        var dt=parse(x.d),lb=n<=7?dt.toLocaleDateString('fr-FR',{weekday:'short'}).replace('.',''):dt.getDate()+'/'+(dt.getMonth()+1);
+        s+='<text x="'+cx+'" y="'+(H-8)+'" text-anchor="middle">'+lb+'</text>';
+      }
+    });
+    s+='</svg>';
+    $('chartbox').innerHTML='<h3>Pains vendus par jour</h3>'+(note?'<div class="hint">'+note+'</div>':'')+s+'<div class="legend"><span><i style="background:var(--wheat)"></i>Petits</span><span><i style="background:var(--accent)"></i>Grands</span></div>';
+  }
+  $('periods').addEventListener('click',function(e){var b=e.target.closest('[data-p]');if(!b)return;var v=b.dataset.p;ui.period=(v==='mois'||v==='tout')?v:+v;renderStats()});
+  $('csv').onclick=function(){
+    var r=range(),os=state.orders.filter(function(o){return o.date>=r[0]&&o.date<=r[1]}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:a.created-b.created});
+    if(!os.length){toast('Rien à copier sur cette période');return}
+    function c(v){return '"'+String(v).replace(/"/g,'""')+'"'}
+    var rows=['Date;Client;Téléphone;Petits;Grands;Montant;Statut;Payé;Mode;Remarque'].concat(os.map(function(o){return [o.date,c(o.name),c(o.phone||''),o.petit,o.grand,total(o),STATUS[o.status],o.paid?'oui':'non',o.mode,c(o.note||'')].join(';')}));
+    copyText(rows.join('\n'),'Données copiées, à coller dans un tableur');
+  };
+
+  /* ---------- réglages ---------- */
+  $('openGuide').onclick=function(){show('guide')};
+  $('closeGuide').onclick=function(){show('settings')};
+  $('sShop').addEventListener('input',function(){state.shop=this.value.trim()||'Pain Blé';$('shopName').textContent=state.shop});
+  $('sShop').addEventListener('change',function(){save()});
+  $('pPetit').addEventListener('change',function(){state.prices.petit=Math.max(0,+this.value||0);save();toast('Prix du petit enregistré')});
+  $('pGrand').addEventListener('change',function(){state.prices.grand=Math.max(0,+this.value||0);save();toast('Prix du grand enregistré')});
+  $('backup').onclick=function(){copyText(JSON.stringify(state),'Sauvegarde copiée')};
+  $('warnBackup').onclick=function(){copyText(JSON.stringify(state),'Sauvegarde copiée')};
+  $('restoreBtn').onclick=function(){$('restoreBox').hidden=!$('restoreBox').hidden};
+  $('restoreGo').onclick=function(){
+    try{
+      var d=JSON.parse($('restoreTxt').value);
+      if(!d||!Array.isArray(d.orders))throw 0;
+      state.orders=d.orders;state.clients=Array.isArray(d.clients)?d.clients:[];if(d.prices)state.prices=d.prices;if(d.shop)state.shop=d.shop;
+      migrate();save();$('restoreTxt').value='';$('restoreBox').hidden=true;fillSettings();render();toast('Sauvegarde restaurée');
+    }catch(e){toast("Ce texte n'est pas une sauvegarde valide")}
+  };
+  $('demo').onclick=function(){
+    var t=today(),n=Date.now();
+    [['Awa Diop',2,1,'À récupérer à 17h','17:00',false],['Moussa Ndiaye',0,3,'','',true],['Fatou Sarr',5,0,'Pour une réunion','10:30',false]].forEach(function(r,i){
+      state.orders.push({id:uid(),created:n+i,name:r[0],phone:'',petit:r[1],grand:r[2],note:r[3],time:r[4],mode:'retrait',date:t,status:'attente',paid:r[5],pp:state.prices.petit,pg:state.prices.grand});
+    });
+    save();ui.date=t;show('orders');toast('Exemples ajoutés. Supprimez-les quand vous voulez.');
+  };
+  var wipeT;
+  $('wipe').onclick=function(){
+    var btn=this;
+    if(!ui.wipe){
+      ui.wipe=true;btn.textContent='Confirmer : tout effacer';
+      $('wipeHint').textContent='Touchez encore une fois pour tout effacer. Sinon, rien ne change.';
+      clearTimeout(wipeT);
+      wipeT=setTimeout(function(){ui.wipe=false;btn.textContent='Réinitialiser le logiciel';$('wipeHint').textContent=''},5000);
+    }else{
+      clearTimeout(wipeT);ui.wipe=false;
+      state.orders=[];state.clients=[];state.prices={petit:200,grand:1000};state.shop='Pain Blé';
+      ui.date=today();ui.q='';ui.filter='all';ui.debt=false;ui.askPay=null;ui.open={};editingId=null;
+      btn.textContent='Réinitialiser le logiciel';$('wipeHint').textContent='';
+      fillSettings();save();render();toast('Logiciel réinitialisé : il est vide, prêt à repartir.');
+    }
+  };
+  var themeBtn=$('themeBtn');
+  function isDark(){var a=document.documentElement.getAttribute('data-theme');return a?a==='dark':matchMedia('(prefers-color-scheme: dark)').matches}
+  function themeLabel(){themeBtn.textContent=isDark()?'Passer en mode clair':'Passer en mode sombre'}
+  themeBtn.onclick=function(){var n=isDark()?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem(KEY+'-theme',n)}catch(e){}themeLabel()};
+  function fillSettings(){$('sShop').value=state.shop;$('pPetit').value=state.prices.petit;$('pGrand').value=state.prices.grand;$('shopName').textContent=state.shop}
+
+  /* ---------- rendu ---------- */
+  function renderClientsList(){$('clients').innerHTML=clients().map(function(c){return '<option value="'+esc(c.name)+'">'}).join('')}
+  function render(){
+    $('todayLbl').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
+    if(ui.view==='orders')renderOrders();
+    else if(ui.view==='clients')renderClients();
+    else if(ui.view==='stats')renderStats();
+    else if(ui.view==='new')renderDraft();
+    renderClientsList();
+  }
+
+  try{var th=localStorage.getItem(KEY+'-theme');if(th)document.documentElement.setAttribute('data-theme',th)}catch(e){}
+  load();fillSettings();themeLabel();
+  prepareNew();
+  show('orders');
+  initDb();
+})();
+</script>
+
+</html>
